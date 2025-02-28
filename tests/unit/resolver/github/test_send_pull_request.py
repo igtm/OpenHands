@@ -312,7 +312,7 @@ def test_update_existing_pull_request(
     mock_requests_post.assert_called_once_with(
         comment_url,
         headers={
-            'Authorization': f'token {token}',
+            'Authorization': f'Bearer {token}',
             'Accept': 'application/vnd.github.v3+json',
         },
         json={'body': expected_comment},
