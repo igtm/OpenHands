@@ -34,27 +34,30 @@ def identify_token(token: str) -> Platform:
              "GitLab" if the token is valid for GitLab,
              "Invalid" if the token is not recognized by either.
     """
-    github_url = 'https://api.github.com/user'
-    github_headers = {'Authorization': f'token {token}'}
+    return Platform.GITHUB
+    # WORKAROUND: Github Apps Token is not working
 
-    try:
-        github_response = requests.get(github_url, headers=github_headers, timeout=5)
-        if github_response.status_code == 200:
-            return Platform.GITHUB
-    except requests.RequestException as e:
-        print(f'Error connecting to GitHub API: {e}')
+    # github_url = 'https://api.github.com/user'
+    # github_headers = {'Authorization': f'token {token}'}
 
-    gitlab_url = 'https://gitlab.com/api/v4/user'
-    gitlab_headers = {'Authorization': f'Bearer {token}'}
+    # try:
+    #     github_response = requests.get(github_url, headers=github_headers, timeout=5)
+    #     if github_response.status_code == 200:
+    #         return Platform.GITHUB
+    # except requests.RequestException as e:
+    #     print(f'Error connecting to GitHub API: {e}')
 
-    try:
-        gitlab_response = requests.get(gitlab_url, headers=gitlab_headers, timeout=5)
-        if gitlab_response.status_code == 200:
-            return Platform.GITLAB
-    except requests.RequestException as e:
-        print(f'Error connecting to GitLab API: {e}')
+    # gitlab_url = 'https://gitlab.com/api/v4/user'
+    # gitlab_headers = {'Authorization': f'Bearer {token}'}
 
-    return Platform.INVALID
+    # try:
+    #     gitlab_response = requests.get(gitlab_url, headers=gitlab_headers, timeout=5)
+    #     if gitlab_response.status_code == 200:
+    #         return Platform.GITLAB
+    # except requests.RequestException as e:
+    #     print(f'Error connecting to GitLab API: {e}')
+
+    # return Platform.INVALID
 
 
 def codeact_user_response(
