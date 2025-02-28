@@ -189,7 +189,12 @@ async def process_issue(
     # write the repo to the workspace
     if os.path.exists(workspace_base):
         shutil.rmtree(workspace_base)
-    shutil.copytree(os.path.join(output_dir, 'repo'), workspace_base)
+    try:
+        shutil.copytree(os.path.join(output_dir, 'repo'), workspace_base, symlinks=True, 
+                       ignore_dangling_symlinks=True)
+    except shutil.Error as e:
+        # Log warning but continue if some symlinks couldn't be copied
+        logger.warning(f"Some files could not be copied: {e}")
 
     # This code looks unnecessary because these are default values in the config class
     # they're set by default if nothing else overrides them
