@@ -98,13 +98,14 @@ async def complete_runtime(
     logger.info('-' * 30)
     obs: Observation
 
-    action = CmdRunAction(command='cd /workspace')
+    workspace = os.getenv('GITHUB_WORKSPACE', '/workspace')
+    action = CmdRunAction(command=f'cd {workspace}')
     logger.info(action, extra={'msg_type': 'ACTION'})
     obs = runtime.run_action(action)
     logger.info(obs, extra={'msg_type': 'OBSERVATION'})
     if not isinstance(obs, CmdOutputObservation) or obs.exit_code != 0:
         raise RuntimeError(
-            f'Failed to change directory to /workspace. Observation: {obs}'
+            f'Failed to change directory to {workspace}. Observation: {obs}'
         )
 
     action = CmdRunAction(command='git config --global core.pager ""')
@@ -114,7 +115,7 @@ async def complete_runtime(
     if not isinstance(obs, CmdOutputObservation) or obs.exit_code != 0:
         raise RuntimeError(f'Failed to set git config. Observation: {obs}')
 
-    action = CmdRunAction(command='git config --global --add safe.directory /workspace')
+    action = CmdRunAction(command=f'git config --global --add safe.directory {workspace}')
     logger.info(action, extra={'msg_type': 'ACTION'})
     obs = runtime.run_action(action)
     logger.info(obs, extra={'msg_type': 'OBSERVATION'})
