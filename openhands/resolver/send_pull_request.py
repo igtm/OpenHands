@@ -142,7 +142,10 @@ def initialize_repo(
     if os.path.exists(dest_dir):
         shutil.rmtree(dest_dir)
 
-    shutil.copytree(src_dir, dest_dir)
+    try:
+        shutil.copytree(src_dir, dest_dir, symlinks=True, ignore_dangling_symlinks=True)
+    except shutil.Error as e:
+        logger.warning(f"Some files could not be copied: {e}")
     print(f'Copied repository to {dest_dir}')
 
     # Checkout the base commit if provided
