@@ -34,7 +34,6 @@ def identify_token(token: str) -> Platform:
              "GitLab" if the token is valid for GitLab,
              "Invalid" if the token is not recognized by either.
     """
-    return Platform.GITHUB
     # # Try GitHub PAT first
     # github_user_url = 'https://api.github.com/user'
     # github_app_url = 'https://api.github.com/app'
@@ -67,6 +66,7 @@ def identify_token(token: str) -> Platform:
     #     logger.error(f'Error connecting to GitLab endpoint: {e}')
 
     # return Platform.INVALID
+    return Platform.GITHUB
 
 
 def codeact_user_response(
@@ -137,7 +137,7 @@ def prepare_dataset(
     id_column = 'instance_id'
     logger.info(f'Writing evaluation output to {output_file}')
     finished_ids = set()
-    if os.path.exists(output_file, 'r') as f:
+    if os.path.exists(output_file):
         with open(output_file, 'r') as f:
             for line in f:
                 data = json.loads(line)
