@@ -61,16 +61,15 @@ def initialize_runtime(
     logger.info('-' * 30)
     obs: Observation
 
-    workspace = os.getenv('GITHUB_WORKSPACE', '/workspace')
-    action = CmdRunAction(command=f'cd {workspace}')
+    action = CmdRunAction(command='cd /workspace')
     logger.info(action, extra={'msg_type': 'ACTION'})
     obs = runtime.run_action(action)
     logger.info(obs, extra={'msg_type': 'OBSERVATION'})
     if not isinstance(obs, CmdOutputObservation) or obs.exit_code != 0:
-        raise RuntimeError(f'Failed to change directory to {workspace}.\n{obs}')
+        raise RuntimeError(f'Failed to change directory to /workspace.\n{obs}')
 
     if platform == Platform.GITLAB and os.getenv('GITLAB_CI') == 'true':
-        action = CmdRunAction(command=f'sudo chown -R 1001:0 {workspace}/*')
+        action = CmdRunAction(command='sudo chown -R 1001:0 /workspace/*')
         logger.info(action, extra={'msg_type': 'ACTION'})
         obs = runtime.run_action(action)
         logger.info(obs, extra={'msg_type': 'OBSERVATION'})
