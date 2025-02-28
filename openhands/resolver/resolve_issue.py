@@ -186,6 +186,7 @@ async def process_issue(
 
     # Get the absolute path of the workspace base
     workspace_base = os.path.abspath(workspace_base)
+    logger.info(f'workspace_base: {workspace_base}.')
     # write the repo to the workspace
     if os.path.exists(workspace_base):
         shutil.rmtree(workspace_base)
