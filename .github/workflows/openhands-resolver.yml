@@ -86,8 +86,8 @@ jobs:
 
       - name: Get latest versions and create requirements.txt
         run: |
-          # Install directly from forked repository
-          echo "openhands @ git+https://github.com/igtm/OpenHands.git" > /tmp/requirements.txt
+          # Install directly from forked repository with explicit package name
+          echo "openhands-ai @ git+https://github.com/igtm/OpenHands.git#egg=openhands-ai" > /tmp/requirements.txt
           cat /tmp/requirements.txt
 
       - name: Cache pip dependencies
@@ -216,7 +216,7 @@ jobs:
             if (isExperimentalLabel || isIssueCommentExperimental || isReviewCommentExperimental) {
               console.log("Installing experimental OpenHands...");
               await exec.exec("python -m pip install --upgrade pip");
-              await exec.exec("pip install git+https://github.com/igtm/openhands.git");
+              await exec.exec("pip install 'git+https://github.com/igtm/OpenHands.git#egg=openhands-ai'");
             } else {
               console.log("Installing from requirements.txt...");
               await exec.exec("python -m pip install --upgrade pip");
