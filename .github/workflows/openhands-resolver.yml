@@ -235,25 +235,19 @@ jobs:
           LLM_BASE_URL: ${{ secrets.LLM_BASE_URL }}
           LLM_API_VERSION: ${{ inputs.LLM_API_VERSION }}
           PYTHONPATH: ""
-          WORKSPACE: ${{ github.workspace }}
-        working-directory: ${{ github.workspace }}
         run: |
-          mkdir -p workspace
-          cd workspace
-          python -m openhands.resolver.resolve_issue \
+          cd /tmp && python -m openhands.resolver.resolve_issue \
             --repo ${{ github.repository }} \
             --issue-number ${{ env.ISSUE_NUMBER }} \
             --issue-type ${{ env.ISSUE_TYPE }} \
             --max-iterations ${{ env.MAX_ITERATIONS }} \
             --comment-id ${{ env.COMMENT_ID }} \
-            --is-experimental ${{ steps.install_openhands.outputs.isExperimental }} \
-            --workspace ${{ github.workspace }}/workspace
+            --is-experimental ${{ steps.install_openhands.outputs.isExperimental }}
 
       - name: Check resolution result
         id: check_result
-        working-directory: ${{ github.workspace }}
         run: |
-          if cd workspace && grep -q '"success":true' output/output.jsonl; then
+          if cd /tmp && grep -q '"success":true' output/output.jsonl; then
             echo "RESOLUTION_SUCCESS=true" >> $GITHUB_OUTPUT
           else
             echo "RESOLUTION_SUCCESS=false" >> $GITHUB_OUTPUT
@@ -264,7 +258,7 @@ jobs:
         if: always() # Upload even if the previous steps fail
         with:
           name: resolver-output
-          path: ${{ github.workspace }}/workspace/output/output.jsonl
+          path: /tmp/output/output.jsonl
           retention-days: 30 # Keep the artifact for 30 days
 
       - name: Create draft PR or push branch
@@ -278,22 +272,21 @@ jobs:
           LLM_BASE_URL: ${{ secrets.LLM_BASE_URL }}
           LLM_API_VERSION: ${{ inputs.LLM_API_VERSION }}
           PYTHONPATH: ""
-          WORKSPACE: ${{ github.workspace }}
-        working-directory: ${{ github.workspace }}
         run: |
           if [ "${{ steps.check_result.outputs.RESOLUTION_SUCCESS }}" == "true" ]; then
-            cd workspace && python -m openhands.resolver.send_pull_request \
+            cd /tmp && python -m openhands.resolver.send_pull_request \
               --issue-number ${{ env.ISSUE_NUMBER }} \
               --target-branch ${{ env.TARGET_BRANCH }} \
               --pr-type draft \
               --reviewer ${{ github.actor }} | tee pr_result.txt && \
               grep "draft created" pr_result.txt | sed 's/.*\///g' > pr_number.txt
           else
-            cd workspace && python -m openhands.resolver.send_pull_request \
+            cd /tmp && python -m openhands.resolver.send_pull_request \
               --issue-number ${{ env.ISSUE_NUMBER }} \
               --pr-type branch \
               --send-on-failure | tee branch_result.txt && \
               grep "branch created" branch_result.txt | sed 's/.*\///g; s/.expand=1//g' > branch_name.txt
+          fi
 
       # Step leaves comment for when agent is invoked on PR
       - name: Analyze Push Logs (Updated PR or No Changes) # Skip comment if PR update was successful OR leave comment if the agent made no code changes
