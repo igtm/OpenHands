@@ -92,25 +92,25 @@ jobs:
           echo "openhands-ai @ git+https://github.com/igtm/OpenHands.git#egg=openhands-ai" > /tmp/requirements.txt
           cat /tmp/requirements.txt
 
-      # - name: Cache pip dependencies
-      #   if: |
-      #     !(
-      #       github.event.label.name == 'fix-me-experimental' ||
-      #       (
-      #         (github.event_name == 'issue_comment' || github.event_name == 'pull_request_review_comment') &&
-      #         contains(github.event.comment.body, '@openhands-agent-exp')
-      #       ) ||
-      #       (
-      #         github.event_name == 'pull_request_review' &&
-      #         contains(github.event.review.body, '@openhands-agent-exp')
-      #       )
-      #     )
-      #   uses: actions/cache@v4
-      #   with:
-      #     path: ${{ env.pythonLocation }}/lib/python3.12/site-packages/*
-      #     key: ${{ runner.os }}-pip-openhands-resolver-${{ hashFiles('/tmp/requirements.txt') }}
-      #     restore-keys: |
-      #       ${{ runner.os }}-pip-openhands-resolver-${{ hashFiles('/tmp/requirements.txt') }}
+      - name: Cache pip dependencies
+        if: |
+          !(
+            github.event.label.name == 'fix-me-experimental' ||
+            (
+              (github.event_name == 'issue_comment' || github.event_name == 'pull_request_review_comment') &&
+              contains(github.event.comment.body, '@openhands-agent-exp')
+            ) ||
+            (
+              github.event_name == 'pull_request_review' &&
+              contains(github.event.review.body, '@openhands-agent-exp')
+            )
+          )
+        uses: actions/cache@v4
+        with:
+          path: ${{ env.pythonLocation }}/lib/python3.12/site-packages/*
+          key: ${{ runner.os }}-pip-openhands-resolver-${{ hashFiles('/tmp/requirements.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-openhands-resolver-${{ hashFiles('/tmp/requirements.txt') }}
 
       - name: Check required environment variables
         env:
