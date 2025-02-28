@@ -34,38 +34,39 @@ def identify_token(token: str) -> Platform:
              "GitLab" if the token is valid for GitLab,
              "Invalid" if the token is not recognized by either.
     """
-    # Try GitHub PAT first
-    github_user_url = 'https://api.github.com/user'
-    github_app_url = 'https://api.github.com/app'
-    headers = {'Authorization': f'Bearer {token}'}
-    headers_pat = {'Authorization': f'token {token}'}
+    return Platform.GITHUB
+    # # Try GitHub PAT first
+    # github_user_url = 'https://api.github.com/user'
+    # github_app_url = 'https://api.github.com/app'
+    # headers = {'Authorization': f'Bearer {token}'}
+    # headers_pat = {'Authorization': f'token {token}'}
 
-    try:
-        # Try as GitHub PAT
-        response = requests.get(github_user_url, headers=headers_pat, timeout=5)
-        if response.status_code == 200:
-            return Platform.GITHUB
-    except requests.RequestException as e:
-        logger.error(f'Error connecting to GitHub PAT endpoint: {e}')
+    # try:
+    #     # Try as GitHub PAT
+    #     response = requests.get(github_user_url, headers=headers_pat, timeout=5)
+    #     if response.status_code == 200:
+    #         return Platform.GITHUB
+    # except requests.RequestException as e:
+    #     logger.error(f'Error connecting to GitHub PAT endpoint: {e}')
 
-    try:
-        # Try as GitHub Apps token
-        response = requests.get(github_app_url, headers=headers, timeout=5)
-        if response.status_code == 200:
-            return Platform.GITHUB
-    except requests.RequestException as e:
-        logger.error(f'Error connecting to GitHub Apps endpoint: {e}')
+    # try:
+    #     # Try as GitHub Apps token
+    #     response = requests.get(github_app_url, headers=headers, timeout=5)
+    #     if response.status_code == 200:
+    #         return Platform.GITHUB
+    # except requests.RequestException as e:
+    #     logger.error(f'Error connecting to GitHub Apps endpoint: {e}')
 
-    try:
-        # Try GitLab
-        gitlab_url = 'https://gitlab.com/api/v4/user'
-        gitlab_response = requests.get(gitlab_url, headers=headers, timeout=5)
-        if gitlab_response.status_code == 200:
-            return Platform.GITLAB
-    except requests.RequestException as e:
-        logger.error(f'Error connecting to GitLab endpoint: {e}')
+    # try:
+    #     # Try GitLab
+    #     gitlab_url = 'https://gitlab.com/api/v4/user'
+    #     gitlab_response = requests.get(gitlab_url, headers=headers, timeout=5)
+    #     if gitlab_response.status_code == 200:
+    #         return Platform.GITLAB
+    # except requests.RequestException as e:
+    #     logger.error(f'Error connecting to GitLab endpoint: {e}')
 
-    return Platform.INVALID
+    # return Platform.INVALID
 
 
 def codeact_user_response(
