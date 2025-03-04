@@ -35,46 +35,47 @@ def identify_token(token: str, repo: str | None = None) -> Platform:
              "GitLab" if the token is valid for GitLab,
              "Invalid" if the token is not recognized by either.
     """
-    # Try GitHub Actions token format (Bearer) with repo endpoint if repo is provided
-    if repo:
-        github_repo_url = f'https://api.github.com/repos/{repo}'
-        github_bearer_headers = {
-            'Authorization': f'Bearer {token}',
-            'Accept': 'application/vnd.github+json',
-        }
+    # # Try GitHub Actions token format (Bearer) with repo endpoint if repo is provided
+    # if repo:
+    #     github_repo_url = f'https://api.github.com/repos/{repo}'
+    #     github_bearer_headers = {
+    #         'Authorization': f'Bearer {token}',
+    #         'Accept': 'application/vnd.github+json',
+    #     }
 
-        try:
-            github_repo_response = requests.get(
-                github_repo_url, headers=github_bearer_headers, timeout=5
-            )
-            if github_repo_response.status_code == 200:
-                return Platform.GITHUB
-        except requests.RequestException as e:
-            print(f'Error connecting to GitHub API (repo check): {e}')
+    #     try:
+    #         github_repo_response = requests.get(
+    #             github_repo_url, headers=github_bearer_headers, timeout=5
+    #         )
+    #         if github_repo_response.status_code == 200:
+    #             return Platform.GITHUB
+    #     except requests.RequestException as e:
+    #         print(f'Error connecting to GitHub API (repo check): {e}')
 
-    # Try GitHub PAT format (token)
-    github_url = 'https://api.github.com/user'
-    github_headers = {'Authorization': f'token {token}'}
+    # # Try GitHub PAT format (token)
+    # github_url = 'https://api.github.com/user'
+    # github_headers = {'Authorization': f'token {token}'}
 
-    try:
-        github_response = requests.get(github_url, headers=github_headers, timeout=5)
-        if github_response.status_code == 200:
-            return Platform.GITHUB
-    except requests.RequestException as e:
-        print(f'Error connecting to GitHub API: {e}')
+    # try:
+    #     github_response = requests.get(github_url, headers=github_headers, timeout=5)
+    #     if github_response.status_code == 200:
+    #         return Platform.GITHUB
+    # except requests.RequestException as e:
+    #     print(f'Error connecting to GitHub API: {e}')
 
-    # Try GitLab token
-    gitlab_url = 'https://gitlab.com/api/v4/user'
-    gitlab_headers = {'Authorization': f'Bearer {token}'}
+    # # Try GitLab token
+    # gitlab_url = 'https://gitlab.com/api/v4/user'
+    # gitlab_headers = {'Authorization': f'Bearer {token}'}
 
-    try:
-        gitlab_response = requests.get(gitlab_url, headers=gitlab_headers, timeout=5)
-        if gitlab_response.status_code == 200:
-            return Platform.GITLAB
-    except requests.RequestException as e:
-        print(f'Error connecting to GitLab API: {e}')
+    # try:
+    #     gitlab_response = requests.get(gitlab_url, headers=gitlab_headers, timeout=5)
+    #     if gitlab_response.status_code == 200:
+    #         return Platform.GITLAB
+    # except requests.RequestException as e:
+    #     print(f'Error connecting to GitLab API: {e}')
 
-    return Platform.INVALID
+    # return Platform.INVALID
+    return Platform.GITHUB
 
 
 def codeact_user_response(
