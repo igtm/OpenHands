@@ -58,7 +58,16 @@ permissions:
   issues: write
 
 jobs:
+  print-event:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Print event details
+        run: |
+          echo "github.event_name: ${{ github.event_name }}"
+          echo "github.event: ${{ toJson(github.event) }}"
+
   auto-fix:
+    needs: print-event
     if: |
       github.event_name == 'workflow_call' ||
       github.event.label.name == 'fix-me' ||
