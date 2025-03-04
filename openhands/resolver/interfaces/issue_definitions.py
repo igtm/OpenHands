@@ -385,6 +385,12 @@ class ServiceContextIssue(ServiceContext):
             last_message=last_message,
             git_patch=git_patch or self.default_git_patch,
         )
+        # Truncate prompt if needed to stay within context window
+        max_tokens = self.llm.config.max_input_tokens
+        # Reserve 20% for the response
+        available_tokens = int(max_tokens * 0.8)
+        # Truncate prompt if it's too long
+        prompt = prompt[:available_tokens * 4]  # Approximate 4 chars per token
 
         response = self.llm.completion(messages=[{'role': 'user', 'content': prompt}])
 
